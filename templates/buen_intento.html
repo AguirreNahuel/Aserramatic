@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="chiste-container">
+    <div class="chiste-card">
+        <i class="fas fa-user-secret icon-spy"></i>
+        <h1>¡Hola, {{ user.get_display_name }}!</h1> 
+        
+        <p class="mensaje-principal">
+            Nos gusta tu mente curiosa que quiere explorar cada rincón. 
+            Lamentablemente para vos, <strong>esta vez te ganamos</strong> y el acceso está cerrado.
+        </p>
+
+        <p class="recordatorio-reporte">
+            <small>
+                Pero no te detengas: si la próxima lográs ganarnos, ¡contanos! 
+                Un error sin reportar puede ser perjudicial para todos; mejor avisá y lo arreglamos juntos.
+            </small>
+        </p>
+
+        <a href="{% url 'user_index' %}" class="btn-volver">Volver al inicio</a>
+    </div>
+</div>
+{% endblock %}

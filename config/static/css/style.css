@@ -1,0 +1,48 @@
+/* Paleta de Colores Aserradero */
+:root {
+    --bosque-profundo: #1B3022; /* Primario */
+    --madera-natural: #A67B5B;  /* Secundario */
+    --papel-kraft: #F4F1EA;     /* Fondo */
+    --texto-oscuro: #2D2D2D;
+}
+
+body {
+    background-color: var(--papel-kraft);
+    color: var(--texto-oscuro);
+}
+
+/* Encabezados y Navbar */
+.bg-bosque {
+    background-color: var(--bosque-profundo) !important;
+    color: white !important;
+}
+
+.text-bosque {
+    color: var(--bosque-profundo);
+}
+
+/* Botones Personalizados */
+.btn-aserradero {
+    background-color: var(--madera-natural);
+    color: white;
+    border: none;
+    transition: background 0.3s ease;
+}
+
+.btn-aserradero:hover {
+    background-color: #8a654a; /* Un tono más oscuro de madera */
+    color: white;
+}
+
+/* Tablas */
+.table-aserradero thead {
+    background-color: var(--bosque-profundo);
+    color: white;
+}
+
+.table-aserradero {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}

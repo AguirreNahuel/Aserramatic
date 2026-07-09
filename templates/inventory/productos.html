@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}Inventario de Productos - Aserramatic{% endblock %}
+
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    {# --- BLOQUE DE SEGURIDAD Y ENCABEZADO --- #}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-bosque">🌲 Productos Procesados</h2>
+        {# Permiso para registrar basado en la lógica de Personal y Roles #}
+        {% if user.rol.puede_editar or user.is_superuser %}
+            <a href="{% url 'crear_producto' %}" class="btn btn-success shadow-sm">
+                <i class="bi bi-plus-circle"></i> Registrar Producto
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="table-responsive shadow-sm rounded-3">
+        <table class="table table-hover align-middle mb-0 bg-white">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nombre Producto</th>
+                    <th>Especie (Origen)</th>
+                    <th>Medidas (Pulg x Pulg x Pies)</th>
+                    <th class="text-center">Stock (Piezas)</th>
+                    <th class="text-center">Pies Tablares Totales</th>
+                    <th>Estado</th>
+                    {% if user.rol.puede_editar or user.rol.puede_borrar or user.is_superuser %}
+                        <th class="text-center">Acciones</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr>
+                    <td class="fw-bold text-dark">{{ producto.nombre }}</td>
+                    <td>
+                        <span class="badge bg-light text-dark border">
+                            {{ producto.materia_prima.especie }}
+                        </span>
+                    </td>
+                    <td class="text-muted font-monospace">
+                        {{ producto.espesor_pulgadas }}" x {{ producto.ancho_pulgadas }}" x {{ producto.largo_pies }}'
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-secondary px-2 py-1.5">{{ producto.cantidad_piezas }} un.</span>
+                    </td>
+                    <td class="text-center fw-bold text-bosque">
+                        {{ producto.total_pies_tablares|floatformat:2 }} pt
+                    </td>
+                    <td>
+                        {# Semáforo de stock físico industrial #}
+                        {% if producto.cantidad_piezas > 10 %}
+                            <span class="badge rounded-pill bg-success px-3">En Stock</span>
+                        {% elif producto.cantidad_piezas > 0 %}
+                            <span class="badge rounded-pill bg-warning text-dark px-3">Stock Bajo</span>
+                        {% else %}
+                            <span class="badge rounded-pill bg-danger px-3">Sin Stock</span>
+                        {% endif %}
+                    </td>
+                    
+                    {% if user.rol.puede_editar or user.rol.puede_borrar or user.is_superuser %}
+                    <td class="text-center">
+                        <div class="btn-group shadow-sm" role="group">
+                            {% if user.rol.puede_editar or user.is_superuser %}
+                                <a href="{% url 'editar_producto' producto.pk %}" class="btn btn-madera btn-sm text-white">
+                                    <i class="bi bi-pencil-square"></i> Editar
+                                </a>
+                            {% endif %}
+
+                            {% if user.rol.puede_borrar or user.is_superuser %}
+                                <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ producto.id }}">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
+                            {% endif %}
+                        </div>
+                    </td>
+                    {% endif %}
+                </tr>
+
+                {# MODAL DE BORRADO (Estilo Blindado Aserramatic) #}
+                {% if user.rol.puede_borrar or user.is_superuser %}
+                <div class="modal fade" id="deleteModal{{ producto.id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title"><i class="bi bi-exclamation-triangle-fill"></i> Confirmar Eliminación</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-start">
+                                ¿Estás completamente seguro de que deseas eliminar el producto <strong>{{ producto.nombre }}</strong> proveniente de rollizos de <strong>{{ producto.materia_prima.especie }}</strong>?
+                                <br><small class="text-muted">Medidas: {{ producto.espesor_pulgadas }}x{{ producto.ancho_pulgadas }}x{{ producto.largo_pies }}. Esta acción es irreversible.</small>
+                            </div>
+                            <div class="modal-footer bg-light">
+                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                                <form action="{% url 'eliminar_producto' producto.id %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="bi bi-trash"></i> Confirmar Eliminación
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">
+                        <i class="bi bi-info-circle d-block mb-2 fs-4"></i>
+                        No hay productos madereros procesados registrados en el inventario.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {# Botón de regreso al menú intermedio corporativo #}
+    <div class="mt-4">
+        <a href="{% url 'inventory_index' %}" class="btn btn-outline-secondary btn-sm shadow-sm">
+            <i class="bi bi-arrow-left"></i> Volver al Menú de Inventario
+        </a>
+    </div>
+</div>
+{% endblock %}

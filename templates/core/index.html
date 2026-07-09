@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inicio - Aserramatic{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="text-bosque-profundo">Bienvenido al Sistema de Gestión</h2>
+            <hr style="border-top: 3px solid var(--madera-natural); width: 50px; margin-left: 0;">
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card-aserradero card-stats p-3 text-center">
+                <span class="text-muted text-uppercase small fw-bold">Personal Activo</span>
+                <h2 class="mb-0">{{ users_count }}</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-aserradero card-stats p-3 text-center">
+                <span class="text-muted text-uppercase small fw-bold">Producción Total (Pies Tablares)</span>
+                <h2 class="mb-0">{{ total_pies_tablares|floatformat:2 }}</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-aserradero card-stats p-3 text-center">
+                <span class="text-muted text-uppercase small fw-bold">Materia Prima</span>
+                <h2 class="mb-0">{{ total_rollizos }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 text-center">
+        <div class="col-6 col-md-3">
+            <a href="{% url 'user_index' %}" class="btn-aserradero btn-dashboard shadow">
+                <i class="bi bi-people-fill icon-dashboard"></i>
+                Gestión Personal
+            </a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a href="{% url 'inventory_index' %}" class="btn-aserradero btn-dashboard shadow">
+                <i class="bi bi-truck icon-dashboard"></i>
+                Inventario
+            </a>
+        </div>
+        <!-- <div class="col-6 col-md-3"> -->
+        <!--     <a href="#" class="btn-aserradero btn-dashboard shadow opacity-75"> -->
+        <!--         <i class="bi bi-hammer icon-dashboard"></i> -->
+        <!--         Producción -->
+        <!--     </a> -->
+        <!-- </div> -->
+        <div class="col-6 col-md-3">
+            <a href="{% url 'reports_index' %}" class="btn-aserradero btn-dashboard shadow">
+                <i class="bi bi-file-earmark-bar-graph icon-dashboard"></i>
+                Reportes
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

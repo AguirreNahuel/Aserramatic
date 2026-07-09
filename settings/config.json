@@ -1,0 +1,4 @@
+{
+    "auto_logout": true,
+    "session_timeout": 30
+}

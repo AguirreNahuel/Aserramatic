@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Gestión de Personal</h2>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-success">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-badge-fill display-4 text-success"></i>
+                    <h5 class="card-title mt-3">Cuentas de Acceso</h5>
+                    <p class="card-text text-muted">Administrar usuarios.</p>
+                    <span class="badge bg-success">{{ usuarios_qty }} Usuarios creados</span>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{% url 'user_list' %}" class="btn btn-success w-100">Ver cuentas</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-success"> 
+                <div class="card-body text-center">
+                    <i class="bi bi-person-lines-fill display-4 text-success"></i>
+                    <h5 class="card-title mt-3">Gestión de Empleados</h5>
+                    <p class="card-text text-muted">Personas físicas, DNI y legajos.</p>
+                    <span class="badge bg-success">{{ empleados_qty }} Registrados</span>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{% url 'empleado_list' %}" class="btn btn-success w-100">Ver Empleados</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-success">
+                <div class="card-body text-center">
+                    <i class="bi bi-shield-lock-fill display-4 text-success"></i>
+                    <h5 class="card-title mt-3 text-dark">Roles y Permisos</h5>
+                    <p class="card-text text-muted">Configuración de niveles de acceso para el personal.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{% url 'rol_list' %}" class="btn btn-success w-100">Ver roles</a>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

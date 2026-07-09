@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Empleados - Aserramatic{% endblock %}
+
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    {# --- BLOQUE DE SEGURIDAD PRINCIPAL: SOLO ENTRA SI TIENE PERMISO DE VER --- #}
+    {% if user.rol.puede_ver or user.is_superuser %}
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-bosque"><i class="bi bi-people-fill"></i> Gestión de Empleados</h2>
+            
+            {# SOLO SE MUESTRA SI TIENE PERMISO DE EDITAR/CREAR #}
+            {% if user.rol.puede_editar or user.is_superuser %}
+                <a href="{% url 'empleado_create' %}" class="btn btn-success">Registrar Nuevo</a>
+            {% endif %}
+        </div>
+
+        <div class="table-responsive shadow-sm">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Apellido y Nombre</th>
+                        <th>DNI / CUIL</th>
+                        <th>Usuario Vinculado</th>
+                        {# OCULTAMOS COLUMNA DE ACCIONES SI NO PUEDE HACER NADA #}
+                        {% if user.rol.puede_editar or user.rol.puede_borrar or user.is_superuser %}
+                            <th class="text-center">Acciones</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for empleado in empleados %}
+                    <tr>
+                        <td class="fw-bold">{{ empleado.apellido }}, {{ empleado.nombre }}</td>
+                        <td>{{ empleado.dni_cuil }}</td>
+                        <td>
+                            {% if empleado.user %}
+                                <span class="badge bg-info text-dark">@{{ empleado.user.username }}</span>
+                            {% else %}
+                                <span class="text-muted italic">Sin cuenta</span>
+                            {% endif %}
+                        </td>
+                        
+                        {# ACCIONES FILTRADAS POR PERMISO #}
+                        {% if user.rol.puede_editar or user.rol.puede_borrar or user.is_superuser %}
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                {% if user.rol.puede_editar or user.is_superuser %}
+                                    <a href="{% url 'empleado_update' empleado.pk %}" class="btn btn-madera btn-sm">
+                                        <i class="bi bi-pencil-square"></i> Editar
+                                    </a>
+                                {% endif %}
+
+                                {% if user.rol.puede_borrar or user.is_superuser %}
+                                    <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ empleado.pk }}">
+                                        <i class="bi bi-trash"></i> Eliminar
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                        {% endif %}
+                    </tr>
+
+                    {# MODAL DE BORRADO: SOLO SE RENDERIZA SI TIENE PERMISO #}
+                    {% if user.rol.puede_borrar or user.is_superuser %}
+                    <div class="modal fade" id="deleteModal{{ empleado.pk }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-start">
+                                    ¿Estás seguro que deseas eliminar al empleado <strong>{{ empleado.nombre }} {{ empleado.apellido }}</strong>?<br>
+                                    <small class="text-danger font-italic">Esta acción no se puede deshacer y podría afectar al usuario vinculado.</small>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <form action="{% url 'empleado_delete' empleado.pk %}" method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">Eliminar Definitivamente</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">No hay empleados registrados actualmente.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-4">
+            <a href="{% url 'user_index' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i> Volver al Menú de Personal
+            </a>
+        </div>
+
+    {# --- BLOQUE DE ACCESO DENEGADO (IGUALADO AL TEMPLATE DE USUARIOS) --- #}
+    {% else %}
+        <div class="alert alert-danger shadow-lg text-center p-5 mt-5">
+            <i class="bi bi-shield-slash display-1"></i>
+            <h2 class="mt-3">Acceso Denegado</h2>
+            <p class="lead">Usted no tiene permisos para consultar la lista de personal.</p>
+            <a href="{% url 'user_index' %}" class="btn btn-outline-danger mt-3">Volver al Menú Principal</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

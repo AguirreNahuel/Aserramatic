@@ -1,0 +1,12 @@
+.DS_Store
+Thumbs.db
+
+node_modules/
+__pycache__/
+.env
+
+
+.vscode/
+.idea/
+
+*.sqlite3

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Reporte de Materias Primas{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Reporte de Materias Primas</h2>
+
+        <a href="{% url 'reporte_materias_primas_pdf' %}" target="_blank" class="btn btn-danger">
+            Generar PDF
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Especie</th>
+                        <th>Cantidad de Rollizos</th>
+                        <th>Fecha de Ingreso</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for materia in materias_primas %}                    <tr>
+                        <td>{{ materia.especie }}</td>
+                        <td>{{ materia.cantidad_rollizos }}</td>
+                        <td>{{ materia.fecha_ingreso }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center">
+                            No hay materias primas registradas.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

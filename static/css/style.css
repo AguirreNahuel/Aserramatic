@@ -1,0 +1,389 @@
+/* ==========================================================================
+   1. VARIABLES Y CONFIGURACIÓN BASE
+   ========================================================================== */
+:root {
+    --bosque-profundo: #1B3022;
+    --madera-natural: #A67B5B;
+    --madera-suave: #d7b594;
+    --papel-kraft: #F4F1EA;
+    --texto-oscuro: #2C2C2C;
+    --blanco: #ffffff;
+    
+    /* Variables de Modo Oscuro */
+    --fondo-oscuro: #121212;
+    --card-oscura: #1e1e1e;
+    --input-oscuro: #2c2c2c;
+    --borde-oscuro: #444444;
+}
+
+body {
+    background-color: var(--papel-kraft);
+    color: var(--texto-oscuro);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Base Modo Oscuro */
+body.dark {
+    background-color: var(--fondo-oscuro);
+    color: #e0e0e0;
+}
+
+
+/* ==========================================================================
+   2. COMPONENTES GLOBALES (NAVBAR, INPUTS, BOTONES)
+   ========================================================================== */
+
+/* Navbar Industrial */
+.navbar-aserradero {
+    background-color: var(--bosque-profundo);
+    border-bottom: 4px solid var(--madera-natural);
+}
+.navbar-aserradero .navbar-brand, 
+.navbar-aserradero .nav-link {
+    color: var(--blanco) !important;
+}
+
+/* Inputs con estilo industrial */
+input[type="text"], 
+input[type="password"], 
+input[type="email"], 
+select, 
+.input-aserradero {
+    display: block;
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: var(--blanco);
+    color: var(--texto-oscuro);
+    transition: all 0.3s ease;
+}
+input:focus, 
+select:focus, 
+.input-aserradero:focus {
+    border-color: var(--madera-natural);
+    box-shadow: 0 0 0 0.25rem rgba(166, 123, 91, 0.25);
+    outline: 0;
+}
+
+/* Inputs en Modo Oscuro */
+body.dark input[type="text"],
+body.dark input[type="password"],
+body.dark input[type="email"],
+body.dark select,
+body.dark .input-aserradero {
+    background-color: var(--input-oscuro);
+    border-color: var(--borde-oscuro);
+    color: var(--blanco);
+}
+
+/* Botón Principal */
+.btn-aserradero {
+    display: inline-block;
+    background-color: var(--bosque-profundo);
+    color: var(--blanco);
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1.5rem;
+    text-decoration: none;
+    text-align: center;
+    transition: transform 0.2s, background-color 0.2s;
+}
+.btn-aserradero:hover {
+    background-color: #2d5a45;
+    transform: translateY(-1px);
+    color: var(--blanco);
+    text-decoration: none;
+}
+
+
+/* ==========================================================================
+   3. SOLUCIÓN RESPONSIVE: BOTONES / TARJETAS DE GESTIÓN (DASHBOARD)
+   ========================================================================== */
+/* Fix para evitar que "Gestión Personal" desborde o rompa los bordes en el cel */
+.btn-dashboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 1.25rem 1rem;
+    border-radius: 12px;
+    font-weight: 600;
+    text-align: center;
+    white-space: normal; /* Permite quiebre de línea controlado si es necesario */
+    word-wrap: break-word;
+    overflow: hidden; /* Mantiene el contenido dentro de los bordes redondeados */
+}
+
+@media (max-width: 576px) {
+    .btn-dashboard {
+        font-size: 0.9rem; /* Achica un toque la letra en pantallas muy chicas */
+        padding: 1rem 0.75rem;
+    }
+}
+
+
+/* ==========================================================================
+   4. DASHBOARD, GRIDS Y MÓDULOS
+   ========================================================================== */
+.dashboard-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.current-date {
+    color: var(--madera-natural);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Barra de Estado */
+.status-card {
+    background: #2d241e; /* Madera oscura industrial */
+    color: var(--blanco);
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-around;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+.status-item .label {
+    display: block;
+    font-size: 0.8rem;
+    color: #bdc3c7;
+}
+.status-item .value {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Tarjetas Estándar */
+.card-aserradero {
+    background: var(--blanco);
+    border-radius: 12px;
+    border-left: 5px solid var(--bosque-profundo);
+    border-right: 1px solid #f0f0f0;
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+body.dark .card-aserradero {
+    background-color: var(--card-oscura);
+    border-color: var(--borde-oscuro);
+    color: var(--blanco);
+}
+
+/* Grilla de Módulos */
+.modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+.module-card {
+    background: var(--blanco);
+    border: 2px solid #e0e0e0;
+    padding: 2rem;
+    text-decoration: none;
+    color: var(--texto-oscuro);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.module-card i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--madera-natural);
+}
+.module-card:hover {
+    border-color: var(--madera-natural);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+.module-card.locked {
+    background: #f9f9f9;
+    color: #adb5bd;
+    border-color: #dee2e6;
+    cursor: not-allowed;
+}
+
+/* Módulos en Modo Oscuro */
+body.dark .module-card {
+    background-color: var(--card-oscura);
+    border-color: var(--borde-oscuro);
+    color: var(--blanco);
+}
+
+
+/* ==========================================================================
+   5. PANTALLA DE ACCESO RESTRINGIDO (CHISTE DE JAVIER / SPY) - CORREGIDO
+   ========================================================================== */
+.chiste-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 140px); /* Evita desbordes verticales */
+    padding: 1.5rem;
+}
+
+.chiste-card {
+    background: var(--blanco);
+    border-radius: 12px;
+    border-top: 6px solid var(--madera-natural); /* Línea de advertencia tipo madera */
+    border-bottom: 1px solid #e0e0e0;
+    border-left: 1px solid #e0e0e0;
+    border-right: 1px solid #e0e0e0;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    max-width: 550px;
+    width: 100%;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.icon-spy {
+    font-size: 3.5rem;
+    color: var(--bosque-profundo);
+    margin-bottom: 1.25rem;
+}
+
+/* Mensaje principal suavizado (Ya no resalta agresivamente) */
+.mensaje-principal {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--texto-oscuro);
+    margin-bottom: 1.75rem;
+}
+
+/* El 'strong' ahora es sutil, solo negrita normal del texto */
+.mensaje-principal strong {
+    color: var(--texto-oscuro);
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+    font-weight: 700;
+}
+
+/* Bloque de reporte REPOTENCIADO (Ya no pasa desapercibido) */
+.recordatorio-reporte {
+    background-color: #fcfbf9; /* Fondo suave destacado */
+    border-left: 4px solid var(--madera-natural); /* Borde de madera más fuerte */
+    padding: 1.25rem 1.5rem;
+    border-radius: 4px 8px 8px 4px;
+    margin-bottom: 2.25rem;
+    text-align: left;
+    box-shadow: inset 2px 0 5px rgba(0,0,0,0.02);
+}
+
+/* Texto de reporte con tamaño e importancia de lectura real */
+.recordatorio-reporte small {
+    display: block;
+    color: var(--texto-oscuro); /* Color principal, bien legible */
+    font-size: 0.98rem; /* Tamaño casi igual al texto principal */
+    line-height: 1.6;
+    font-weight: 500;
+}
+
+/* Botón de volver específico para la card */
+.chiste-card .btn-volver {
+    display: inline-block;
+    background-color: var(--bosque-profundo);
+    color: var(--blanco);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.75rem 2.5rem;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+.chiste-card .btn-volver:hover {
+    background-color: #2d5a45;
+    transform: translateY(-1px);
+}
+
+/* Modo Oscuro Adaptado para la Corrección */
+body.dark .chiste-card {
+    background-color: var(--card-oscura);
+    border-color: var(--borde-oscuro);
+}
+body.dark .icon-spy {
+    color: var(--madera-suave);
+}
+body.dark .mensaje-principal {
+    color: #e0e0e0;
+}
+body.dark .mensaje-principal strong {
+    color: var(--blanco);
+    background-color: transparent;
+}
+body.dark .recordatorio-reporte {
+    background-color: #1a1a1a;
+    border-left-color: var(--madera-suave);
+}
+body.dark .recordatorio-reporte small {
+    color: #e0e0e0; /* Legibilidad alta en modo oscuro */
+}
+
+
+/* ==========================================================================
+   6. CHECKBOXES Y SWITCHES (BOOTSTRAP FIXES)
+   ========================================================================== */
+input[type="checkbox"].form-check-input {
+    display: inline-block;
+    width: 2em;
+    height: 1em;
+    margin-top: 0.25em;
+    vertical-align: top;
+    background-repeat: no-repeat;
+    background-size: contain;
+    border-radius: 2em;
+    cursor: pointer;
+    transition: background-position 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+/* Estado Activo (:checked) - Modo Claro */
+input[type="checkbox"].form-check-input:checked {
+    background-color: var(--bosque-profundo);
+    border-color: var(--bosque-profundo);
+    background-position: right center;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3ccircle cx='10' cy='10' r='7' fill='%23fff'/%3e%3c/svg%3e");
+}
+
+/* Modo Oscuro General para Switches */
+body.dark .form-check-input {
+    background-color: var(--input-oscuro);
+    border-color: var(--borde-oscuro);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3ccircle cx='10' cy='10' r='7' fill='%23aaa'/%3e%3c/svg%3e");
+}
+/* Estado Activo (:checked) - Modo Oscuro */
+body.dark input[type="checkbox"].form-check-input:checked {
+    background-color: var(--madera-natural);
+    border-color: var(--madera-natural);
+    background-position: right center;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3ccircle cx='10' cy='10' r='7' fill='%23121212'/%3e%3c/svg%3e");
+}
+
+
+/* ==========================================================================
+   7. CLASES UTILITARIAS Y ANIMACIONES
+   ========================================================================== */
+body.dark .text-bosque-profundo { 
+    color: var(--madera-suave) !important; 
+}
+body.dark .text-muted { 
+    color: #aaa !important; 
+}
+
+.bounce-animation {
+    animation: bounce 2s infinite;
+}
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-20px); }
+    60% { transform: translateY(-10px); }
+}

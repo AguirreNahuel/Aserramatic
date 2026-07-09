@@ -1,0 +1,154 @@
+{# ======================================================================= #}
+{# 1. EXTENSIÓN DE BASE Y CONFIGURACIÓN DE TÍTULO                          #}
+{# ======================================================================= #}
+{# Hereda la estructura global (navbar, sidebar, pie de página, etc.) #}
+{% extends 'base.html' %}
+
+{# Define dinámicamente el título de la pestaña del navegador según la acción #}
+{% block title %}
+    {% if form.instance.pk %}Editar{% else %}Nuevo{% endif %} Rol - Aserramatic
+{% endblock %}
+
+{# ======================================================================= #}
+{# 2. BLOQUE DE CONTENIDO PRINCIPAL                                       #}
+{# ======================================================================= #}
+{% block content %}
+
+{# CAPA DE SEGURIDAD EN TEMPLATE: Verifica que sea superusuario o posea explícitamente el permiso de edición #}
+{% if user.is_superuser or user.rol.puede_editar|default:False %}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        {# Tarjeta Contenedora Principal con el estilo industrial de Aserramatic #}
+        <div class="card card-aserradero shadow-sm">
+            
+            {# =========================================================== #}
+            {# 3. ENCABEZADO DE LA TARJETA (TITULO DINÁMICO)               #}
+            {# =========================================================== #}
+            <div class="card-header bg-transparent border-0 pt-4 text-center">
+                <h3 style="color: var(--bosque-profundo);">
+                    {# Determina mediante la clave primaria (pk) si se está modificando un rol o creando uno nuevo #}
+                    {% if form.instance.pk %}
+                        🛠️ Modificar Rol
+                    {% else %}
+                        📜 Crear Nuevo Rol
+                    {% endif %}
+                </h3>
+                <p class="text-muted">Configure los permisos de acceso para este grupo</p>
+            </div>
+            
+            {# =========================================================== #}
+            {# 4. CUERPO DE LA TARJETA (FORMULARIO)                        #}
+            {# =========================================================== #}
+            <div class="card-body px-4">
+                {# novalidate desactiva la validación HTML5 nativa para dar prioridad a los mensajes de Django #}
+                <form method="post" novalidate>
+                    {# Token de seguridad obligatorio de Django para evitar ataques maliciosos de tipo CSRF #}
+                    {% csrf_token %}
+                    
+                    {# --------------------------------------------------- #}
+                    {# Campo de Texto: Nombre del Rol                      #}
+                    {# --------------------------------------------------- #}
+                    <div class="mb-4">
+                        <label for="{{ form.nombre_rol.id_for_label }}" class="form-label fw-bold">
+                            {{ form.nombre_rol.label }}
+                        </label>
+                        {# Renderiza el input (controlado por los widgets industriales definidos en forms.py) #}
+                        {{ form.nombre_rol }}
+                        {# Renderizado automático de errores específicos de validación de este campo #}
+                        {% if form.nombre_rol.errors %}
+                            <div class="text-danger small mt-1">{{ form.nombre_rol.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <hr class="my-4">
+                    <h5 class="mb-3 text-secondary"><i class="fas fa-key me-2"></i>Permisos del Sistema</h5>
+
+                    {# =========================================================== #}
+                    {# 5. SUB-SECCIÓN DE PERMISOS BOLEANOS (SWITCHES DE BOOTSTRAP)  #}
+                    {# =========================================================== #}
+                    {# Contenedor gris claro para agrupar visualmente la botonera de interruptores deslizable #}
+                    <div class="card bg-light border-0">
+                        <div class="card-body">
+                            
+                            {# Permiso 1: Visualización del Sistema #}
+                            <div class="form-check form-switch mb-3">
+                                {{ form.puede_ver }}
+                                <label class="form-check-label ms-2" for="{{ form.puede_ver.id_for_label }}">
+                                    <strong>{{ form.puede_ver.label }}</strong>
+                                    <br><small class="text-muted">{{ form.puede_ver.help_text }}</small>
+                                </label>
+                            </div>
+                        
+                            {# Permiso 2: Edición y Creación de Registros #}
+                            <div class="form-check form-switch mb-3">
+                                {{ form.puede_editar }}
+                                <label class="form-check-label ms-2" for="{{ form.puede_editar.id_for_label }}">
+                                    <strong>{{ form.puede_editar.label }}</strong>
+                                    <br><small class="text-muted">{{ form.puede_editar.help_text }}</small>
+                                </label>
+                            </div>
+                        
+                            {# Permiso 3: Eliminación física/lógica de datos críticos #}
+                            <div class="form-check form-switch mb-3">
+                                {{ form.puede_borrar }}
+                                <label class="form-check-label ms-2" for="{{ form.puede_borrar.id_for_label }}">
+                                    <strong>{{ form.puede_borrar.label }}</strong>
+                                    <br><small class="text-muted">{{ form.puede_borrar.help_text }}</small>
+                                </label>
+                            </div>
+                        
+                            {# Permiso Crítico: Configuración avanzada del sistema (destacado en color rojo) #}
+                            <div class="form-check form-switch border-top pt-3">
+                                {{ form.puede_configurar }}
+                                <label class="form-check-label ms-2" for="{{ form.puede_configurar.id_for_label }}">
+                                    <strong class="text-danger"><i class="fas fa-cog me-1"></i> {{ form.puede_configurar.label }}</strong>
+                                    <br><small class="text-muted">{{ form.puede_configurar.help_text }}</small>
+                                </label>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    {# =========================================================== #}
+                    {# 6. BOTONERA DE ACCIONES FINAL                               #}
+                    {# =========================================================== #}
+                    <div class="d-grid gap-2 mt-4 mb-3">
+                        {# Envía los datos capturados hacia la vista (views.py) para procesar el guardado #}
+                        <button type="submit" class="btn btn-aserradero btn-lg text-white" style="background-color: var(--bosque-profundo);">
+                            <i class="fas fa-save me-2"></i>Guardar Rol
+                        </button>
+                        {# Cancela la operación y redirecciona al listado general de roles configurados #}
+                        <a href="{% url 'rol_list' %}" class="btn btn-outline-secondary">
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+{# ======================================================================= #}
+{# 7. BLOQUE ALTERNATIVO: ACCESO DENEGADO (FALLBACK DE SEGURIDAD)          #}
+{# ======================================================================= #}
+{# Si el usuario logueado NO cumple con las condiciones del IF inicial, se renderiza esta pantalla #}
+{% else %}
+<div class="container mt-5 text-center">
+    <div class="alert alert-danger shadow-lg p-5" style="border-radius: 15px;">
+        <i class="fas fa-user-shield fa-5x mb-4"></i>
+        <h2 class="fw-bold">Acceso Restringido</h2>
+        <hr>
+        <p class="lead">Solo el personal autorizado puede gestionar la jerarquía de roles.</p>
+        <div class="mt-4">
+            {# Botón de rescate para regresar al usuario al panel administrativo principal de usuarios #}
+            <a href="{% url 'user_index' %}" class="btn btn-danger btn-lg px-4">
+                <i class="fas fa-arrow-left me-2"></i>Volver al Panel
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %} 
+
+{% endblock %}

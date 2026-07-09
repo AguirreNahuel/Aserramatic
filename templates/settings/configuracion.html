@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Configuración - Aserramatic{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="text-bosque-profundo">Configuración del Sistema</h2>
+            <hr style="border-top: 3px solid var(--madera-natural); width: 50px; margin-left: 0;">
+            <p class="text-muted">Gestiona tus preferencias personales y los ajustes globales de la planta.</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card-aserradero p-4 shadow-sm">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% if puede_editar_global %}
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-shield-lock-fill text-danger fs-4 me-2"></i>
+                            <h5 class="fw-bold mb-0">Seguridad de Sesión (Ajustes de Planta)</h5>
+                        </div>
+                        
+                        <div class="form-check form-switch mt-3">
+                            <input class="form-check-input" type="checkbox" name="auto_logout" id="autoLogout" 
+                                   {% if config.auto_logout %}checked{% endif %}>
+                            <label class="form-check-label" for="autoLogout">Activar auto-cierre por inactividad</label>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <label class="form-label small fw-bold">Duración de la sesión global (minutos):</label>
+                            <div class="input-group">
+                                <input type="number" name="timeout" class="form-control input-aserradero" 
+                                       value="{{ config.session_timeout }}" min="1" max="1440">
+                                <span class="input-group-text bg-light text-muted small">min</span>
+                            </div>
+                            <div class="form-text small text-italic">Este cambio afectará a todos los operarios del sistema.</div>
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                    {% else %}
+                    <div class="alert alert-light border-0 bg-light p-3 mb-4 d-flex align-items-center">
+                        <i class="bi bi-info-circle-fill text-primary me-3 fs-5"></i>
+                        <span class="small text-muted">
+                            Los ajustes de seguridad de planta están bloqueados. Contacte con un administrador para modificar los tiempos de sesión.
+                        </span>
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-palette-fill text-bosque-profundo fs-4 me-2"></i>
+                            <h5 class="fw-bold mb-0">Preferencias de Apariencia</h5>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <label class="form-label small fw-bold">Modo Visual del Panel:</label>
+                            <select name="theme" class="form-select input-aserradero">
+                                <option value="light" {% if profile.theme == 'light' %}selected{% endif %}>
+                                    ☀️ Modo Claro
+                                </option>
+                                <option value="dark" {% if profile.theme == 'dark' %}selected{% endif %}>
+                                    🌙 Modo Oscuro}
+                                </option>
+                            </select>
+                            <div class="form-text small">Este ajuste es solo para tu cuenta y se recordará en cualquier dispositivo.</div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 pt-3">
+                        <button type="submit" class="btn-aserradero py-2 fw-bold">
+                            <i class="bi bi-save2-fill me-2"></i>Guardar mis cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

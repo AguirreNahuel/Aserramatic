@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="login-container" style="max-width: 400px; margin: 50px auto; padding: 20px; border: 1px solid #1B3022;">
+    <h2 style="color: #1B3022;">Acceso Aserradero</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" style="background-color: #1B3022; color: white; border: none; padding: 10px 20px;">
+            Entrar
+        </button>
+    </form>
+</div>
+{% endblock %}

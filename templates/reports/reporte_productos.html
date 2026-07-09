@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Reporte de Productos{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Reporte de Productos</h2>
+
+        <a href="{% url 'reporte_productos_pdf' %}" target="_blank" class="btn btn-danger">
+            Generar PDF
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Materia Prima</th>
+                        <th>Espesor (")</th>
+                        <th>Ancho (")</th>
+                        <th>Largo (pies)</th>
+                        <th>Piezas</th>
+                        <th>Total Pies Tablares</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for producto in productos %}
+                    <tr>
+                        <td>{{ producto.nombre }}</td>
+                        <td>{{ producto.materia_prima.especie }}</td>
+                        <td>{{ producto.espesor_pulgadas }}</td>
+                        <td>{{ producto.ancho_pulgadas }}</td>
+                        <td>{{ producto.largo_pies }}</td>
+                        <td>{{ producto.cantidad_piezas }}</td>
+                        <td>{{ producto.total_pies_tablares|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">
+                            No hay productos registrados.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

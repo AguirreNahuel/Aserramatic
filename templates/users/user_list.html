@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Usuarios - Aserramatic{% endblock %}
+
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    {# --- BLOQUE DE SEGURIDAD PRINCIPAL --- #}
+    {% if user.rol.puede_ver or user.is_superuser %}
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-bosque">📋 Personal del Aserradero</h2>
+            {% if user.rol.puede_editar or user.is_superuser %}
+                <a href="{% url 'user_create' %}" class="btn btn-success">Registrar Nuevo</a>
+            {% endif %}
+        </div>
+
+        <div class="table-responsive shadow-sm">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Empleado</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        {% if user.rol.puede_editar or user.rol.puede_borrar or user.is_superuser %}
+                            <th class="text-center">Acciones</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for usuario in usuarios %}
+                    <tr>
+                        <td class="fw-bold">{{ usuario.username }}</td>
+                        <td>
+                            {% if usuario.empleado %}
+                                {{ usuario.empleado.nombre }} {{ usuario.empleado.apellido }}
+                            {% else %}
+                                <span class="text-muted italic">Sin asignar</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge bg-info text-dark">
+                                {{ usuario.rol.nombre_rol|default:"Sin Rol" }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if usuario.activo %}
+                                <span class="badge rounded-pill bg-success">Activo</span>
+                            {% else %}
+                                <span class="badge rounded-pill bg-danger">Inactivo</span>
+                            {% endif %}
+                        </td>
+                        
+                        {% if user.rol.puede_editar or user.rol.puede_borrar or user.is_superuser %}
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                {% if user.rol.puede_editar or user.is_superuser %}
+                                    <a href="{% url 'user_edit' usuario.id %}" class="btn btn-madera btn-sm">Editar</a>
+                                {% endif %}
+
+                                {% if user.rol.puede_borrar or user.is_superuser %}
+                                    <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ usuario.id }}">
+                                        Eliminar
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                        {% endif %}
+                    </tr>
+
+                    {# MODAL DE BORRADO #}
+                    {% if user.rol.puede_borrar or user.is_superuser %}
+                    <div class="modal fade" id="deleteModal{{ usuario.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-start">
+                                    ¿Estás seguro que deseas eliminar al usuario <strong>{{ usuario.username }}</strong>?
+                                </div>
+                                <div class="modal-footer">
+                                    <form action="{% url 'user_delete' usuario.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">No hay personal registrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {# El botón de volver solo se muestra si el usuario pudo ver la lista #}
+        <div class="mt-4">
+            <a href="{% url 'user_index' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i> Volver al Menú de Personal
+            </a>
+        </div>
+
+    {# --- BLOQUE DE ACCESO DENEGADO --- #}
+    {% else %}
+        <div class="alert alert-danger shadow-lg text-center p-5 mt-5">
+            <i class="bi bi-shield-slash display-1"></i>
+            <h2 class="mt-3">Acceso Denegado</h2>
+            <p class="lead">Usted no tiene permisos para consultar la lista de personal.</p>
+            {# Botón único para volver cuando no hay permisos #}
+            <a href="{% url 'user_index' %}" class="btn btn-outline-danger mt-3">Volver al Menú Principal</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

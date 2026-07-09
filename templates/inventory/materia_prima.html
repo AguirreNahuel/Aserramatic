@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block title %}Inventario de Materias Primas - Aserramatic{% endblock %}
+
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-bosque">🌲 Materias Primas</h2>
+
+        {% if user.rol.puede_editar or user.is_superuser %}
+            <a href="{% url 'crear_materia_prima' %}" class="btn btn-success shadow-sm">
+                <i class="bi bi-plus-circle"></i> Registrar Materia Prima
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="table-responsive shadow-sm rounded-3">
+        <table class="table table-hover align-middle mb-0 bg-white">
+            <thead class="table-dark">
+                <tr>
+                    <th>Especie</th>
+                    <th class="text-center">Cantidad de Rollizos</th>
+                    <th>Descripción</th>
+                    <th>Fecha de Ingreso</th>
+
+                    {% if user.rol.puede_editar or user.rol.puede_borrar or user.is_superuser %}
+                        <th class="text-center">Acciones</th>
+                    {% endif %}
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for materia in materias_primas %}
+                <tr>
+                    <td>
+                        <span class="badge bg-light text-dark border">
+                            {{ materia.especie }}
+                        </span>
+                    </td>
+
+                    <td class="text-center">
+                        <span class="badge bg-secondary px-3 py-2">
+                            {{ materia.cantidad_rollizos }} un.
+                        </span>
+                    </td>
+
+                    <td class="text-muted">
+                        {{ materia.descripcion|default:"Sin descripción" }}
+                    </td>
+
+                    <td>
+                        {{ materia.fecha_ingreso|date:"d/m/Y" }}
+                    </td>
+
+                    {% if user.rol.puede_editar or user.rol.puede_borrar or user.is_superuser %}
+                    <td class="text-center">
+                        <div class="btn-group shadow-sm" role="group">
+
+                            {% if user.rol.puede_editar or user.is_superuser %}
+                                <a href="{% url 'editar_materia_prima' materia.id %}" class="btn btn-madera btn-sm text-white">
+                                    <i class="bi bi-pencil-square"></i> Editar
+                                </a>
+                            {% endif %}
+
+                            {% if user.rol.puede_borrar or user.is_superuser %}
+                                <button type="button"
+                                        class="btn btn-outline-danger btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal{{ materia.id }}">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
+                            {% endif %}
+
+                        </div>
+                    </td>
+                    {% endif %}
+                </tr>
+
+                {% if user.rol.puede_borrar or user.is_superuser %}
+                <div class="modal fade" id="deleteModal{{ materia.id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title">
+                                    <i class="bi bi-exclamation-triangle-fill"></i>
+                                    Confirmar Eliminación
+                                </h5>
+
+                                <button type="button"
+                                        class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                </button>
+                            </div>
+
+                            <div class="modal-body text-start">
+                                ¿Estás seguro de que deseas eliminar la materia prima de especie
+                                <strong>{{ materia.especie }}</strong>?
+
+                                <br>
+
+                                <small class="text-muted">
+                                    Cantidad de rollizos: {{ materia.cantidad_rollizos }}.
+                                    Esta acción es irreversible.
+                                </small>
+                            </div>
+
+                            <div class="modal-footer bg-light">
+                                <button type="button"
+                                        class="btn btn-secondary btn-sm"
+                                        data-bs-dismiss="modal">
+                                    Cancelar
+                                </button>
+
+                                <form action="{% url 'eliminar_materia_prima' materia.id %}"
+                                      method="post"
+                                      class="d-inline">
+                                    {% csrf_token %}
+
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="bi bi-trash"></i>
+                                        Confirmar Eliminación
+                                    </button>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">
+                        <i class="bi bi-info-circle d-block mb-2 fs-4"></i>
+                        No hay materias primas registradas en el inventario.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'inventory_index' %}" class="btn btn-outline-secondary btn-sm shadow-sm">
+            <i class="bi bi-arrow-left"></i> Volver al Menú de Inventario
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Gestión de Inventario - Aserramatic</h2>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm border-success"> 
+                <div class="card-body text-center">
+                    <i class="bi bi-tree-fill display-4 text-success"></i> 
+                    <h5 class="card-title mt-3 text-dark">Materia Prima</h5>
+                    <p class="card-text text-muted">Ingreso de rollizos y madera en bruto del monte.</p>
+                    <span class="badge bg-success">{{ materia_prima_qty }} Items en stock</span>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{% url 'lista_materia_prima' %}" class="btn btn-success w-100">Ver Materia Prima</a> 
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm border-success"> 
+                <div class="card-body text-center">
+                    <i class="bi bi-stack display-4 text-success"></i> 
+                    <h5 class="card-title mt-3 text-dark">Productos Terminados</h5>
+                    <p class="card-text text-muted">Control de tablas cepilladas, machimbre y productos listos.</p>
+                    <span class="badge bg-success">{{ productos_qty }} Registrados</span> 
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{% url 'lista_productos' %}" class="btn btn-success w-100">Ver Productos</a> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
